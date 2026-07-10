@@ -10,9 +10,6 @@ from query_classifier import classify_query
 
 load_dotenv()
 
-# ----------------------------
-# Load Groq API Key
-# ----------------------------
 
 client = Groq(
     api_key=os.getenv("GROQ_API_KEY")
@@ -20,30 +17,20 @@ client = Groq(
 
 app = FastAPI(title=" RAG System")
 
-# ----------------------------
-# Load Embedding Model
-# ----------------------------
 
 embeddings = get_embedding_model()
 
-# ----------------------------
-# Load Vector Database
-# ----------------------------
 
 vectorstore = load_vector_db(embeddings)
 
 print("Vector Store Loaded Successfully")
 
-# ----------------------------
-# Request Model
-# ----------------------------
+
 
 class QueryRequest(BaseModel):
     question: str
 
-# ----------------------------
-# Home API
-# ----------------------------
+
 
 @app.get("/")
 def home():
@@ -51,9 +38,7 @@ def home():
         "message": "Enterprise RAG API Running Successfully"
     }
 
-# ----------------------------
-# Ask API
-# ----------------------------
+
 
 @app.post("/ask", summary="Ask Enterprise Assistant")
 def ask(request: QueryRequest):
@@ -72,7 +57,7 @@ def ask(request: QueryRequest):
 
     filtered_docs = []
 
-    # Metadata Filtering
+
     for doc in docs:
 
         doc_department = doc.metadata.get("department", "")
@@ -85,7 +70,6 @@ def ask(request: QueryRequest):
         ):
             filtered_docs.append(doc)
 
-    # No Results
     if len(filtered_docs) == 0:
         return {
             "question": request.question,
@@ -95,7 +79,7 @@ def ask(request: QueryRequest):
             "sources": []
         }
 
-    # Build Context
+    
     context = ""
 
     source_set = set()
@@ -113,7 +97,7 @@ def ask(request: QueryRequest):
 
     sources = list(source_set)
 
-    # Prompt
+  
     prompt = f"""
 You are an intelligent enterprise assistant.
 
