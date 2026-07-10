@@ -14,9 +14,7 @@ def load_document(file_path):
 
     extension = os.path.splitext(file_path)[1].lower()
 
-    # -----------------------------------------
-    # PDF using Docling
-    # -----------------------------------------
+
     if extension == ".pdf":
 
         result = converter.convert(file_path)
